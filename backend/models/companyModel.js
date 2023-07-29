@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const companySchema = mongoose.Schema(
   {
+    userId: { type: mongoose.ObjectId, require: true },
     compnayName: String,
     nip: String,
     street: String,

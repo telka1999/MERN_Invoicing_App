@@ -22,7 +22,7 @@ const getUser = async (req, res) => {
   res.status(200).json({ message: "Get User" });
 };
 
-// Update user | PUT | Public
+// Update user | PUT | Private
 
 const updateUser = async (req, res) => {
   res.status(200).json({ message: "Update User" });

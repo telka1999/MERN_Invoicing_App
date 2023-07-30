@@ -1,7 +1,22 @@
+import Company from "../models/companyModel.js";
+
 // Add Company | POST | Private
 
 const addCompany = async (req, res) => {
-  res.status(200).json({ message: "Add Company" });
+  try {
+    const { compnayName, nip, street, city, code } = req.body;
+    const company = await Company.create({
+      userId: req.user._id,
+      compnayName,
+      nip,
+      street,
+      city,
+      code,
+    });
+    res.status(200).json(company);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 // Get Company | GET | Private

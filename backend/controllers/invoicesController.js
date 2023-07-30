@@ -35,7 +35,9 @@ const addInvoice = async (req, res) => {
 // Get Invoice | GET | Private
 
 const getInvoice = async (req, res) => {
-  res.status(200).json({ message: "Get Invoice" });
+  const invoice = await Invoice.find({ userId: req.user._id });
+
+  res.status(200).json(invoice);
 };
 
 // Update Invoice | PUT | Private

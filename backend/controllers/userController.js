@@ -71,7 +71,26 @@ const getUser = async (req, res) => {
 // Update user | PUT | Private
 
 const updateUser = async (req, res) => {
-  res.status(200).json({ message: "Update User" });
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+    });
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
 };
 
 export { authUser, registerUser, logoutUser, getUser, updateUser };

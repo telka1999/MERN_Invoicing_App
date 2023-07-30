@@ -3,32 +3,24 @@ import Company from "../models/companyModel.js";
 // Add Company | POST | Private
 
 const addCompany = async (req, res) => {
-  try {
-    const { compnayName, nip, street, city, code } = req.body;
-    const company = await Company.create({
-      userId: req.user._id,
-      compnayName,
-      nip,
-      street,
-      city,
-      code,
-    });
-    res.status(200).json(company);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+  const { compnayName, nip, street, city, code } = req.body;
+  const company = await Company.create({
+    userId: req.user._id,
+    compnayName,
+    nip,
+    street,
+    city,
+    code,
+  });
+  res.status(200).json(company);
 };
 
 // Get Company | GET | Private
 
 const getCompany = async (req, res) => {
-  try {
-    const companies = await Company.find({ userId: req.user._id });
+  const companies = await Company.find({ userId: req.user._id });
 
-    res.status(200).json(companies);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
+  res.status(200).json(companies);
 };
 
 // Update Company | PUT | Private

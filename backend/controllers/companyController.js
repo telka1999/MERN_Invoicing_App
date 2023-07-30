@@ -26,7 +26,22 @@ const getCompany = async (req, res) => {
 // Update Company | PUT | Private
 
 const updateCompany = async (req, res) => {
-  res.status(200).json({ message: "Update Company" });
+  const { companyId, compnayName, nip, street, city, code } = req.body;
+  const company = await Company.findById(companyId);
+
+  if (company) {
+    company.compnayName = compnayName || company.compnayName;
+    company.nip = nip || company.nip;
+    company.street = street || company.street;
+    company.city = city || company.city;
+    company.code = code || company.code;
+
+    const updatedCompany = await company.save();
+
+    res.status(200).json(updatedCompany);
+  } else {
+    res.status(404).json({ message: "Company not found" });
+  }
 };
 
 // Delete Company | DELETE | Private

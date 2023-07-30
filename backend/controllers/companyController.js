@@ -22,7 +22,13 @@ const addCompany = async (req, res) => {
 // Get Company | GET | Private
 
 const getCompany = async (req, res) => {
-  res.status(200).json({ message: "Get Company" });
+  try {
+    const companies = await Company.find({ userId: req.user._id });
+
+    res.status(200).json(companies);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 // Update Company | PUT | Private

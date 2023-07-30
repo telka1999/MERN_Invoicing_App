@@ -47,7 +47,17 @@ const updateCompany = async (req, res) => {
 // Delete Company | DELETE | Private
 
 const deleteCompany = async (req, res) => {
-  res.status(200).json({ message: "Delete Company" });
+  const { companyId } = req.body;
+
+  const deletedCompany = await Company.deleteOne({
+    _id: companyId,
+    userId: req.user._id,
+  });
+  if (deletedCompany) {
+    res.status(200).json(deletedCompany);
+  } else {
+    res.status(404).json({ message: "Company not found" });
+  }
 };
 
 export { addCompany, getCompany, updateCompany, deleteCompany };

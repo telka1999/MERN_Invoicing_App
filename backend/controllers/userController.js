@@ -59,7 +59,13 @@ const logoutUser = async (req, res) => {
 // Get user profiles | GET | Private
 
 const getUser = async (req, res) => {
-  res.status(200).json({ message: "Get User" });
+  const user = {
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+  };
+
+  res.status(200).json(user);
 };
 
 // Update user | PUT | Private

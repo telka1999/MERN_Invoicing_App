@@ -5,7 +5,16 @@ import bcrypt from "bcryptjs";
 // Auth user | POST | Public
 
 const authUser = async (req, res) => {
-  res.status(200).json({ message: "Auth User" });
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user && (await bcrypt.compare(password, user.password))) {
+    generateToken(res, user._id);
+    res.status(201).json({ _id: user._id, name: user.name, email: user.email });
+  } else {
+    res.status(401).json({ message: "Invalid email or password" });
+  }
 };
 
 // Register user | POST | Public

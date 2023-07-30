@@ -82,7 +82,17 @@ const updateInvoice = async (req, res) => {
 // Delete Invoice | DELETE | Private
 
 const deleteInvoice = async (req, res) => {
-  res.status(200).json({ message: "Delete Invoice" });
+  const { invoiceId } = req.body;
+
+  const deletedInvoice = await Invoice.deleteOne({
+    _id: invoiceId,
+    userId: req.user._id,
+  });
+  if (deletedInvoice) {
+    res.status(200).json(deletedInvoice);
+  } else {
+    res.status(404).json({ message: "Invoice not found" });
+  }
 };
 
 export { addInvoice, getInvoice, updateInvoice, deleteInvoice };

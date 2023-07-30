@@ -5,13 +5,14 @@ import {
   updateInvoice,
   deleteInvoice,
 } from "../controllers/invoicesController.js";
+import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router
   .route("/")
-  .post(addInvoice)
-  .get(getInvoice)
-  .put(updateInvoice)
-  .delete(deleteInvoice);
+  .post(protect, addInvoice)
+  .get(protect, getInvoice)
+  .put(protect, updateInvoice)
+  .delete(protect, deleteInvoice);
 
 export default router;

@@ -5,13 +5,14 @@ import {
   updateCompany,
   deleteCompany,
 } from "../controllers/companyController.js";
+import { protect } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router
   .route("/")
-  .post(addCompany)
-  .get(getCompany)
-  .put(updateCompany)
-  .delete(deleteCompany);
+  .post(protect, addCompany)
+  .get(protect, getCompany)
+  .put(protect, updateCompany)
+  .delete(protect, deleteCompany);
 
 export default router;

@@ -1,7 +1,35 @@
+import Invoice from "../models/invoiceModel.js";
+
 // Add Invoice | POST | Private
 
 const addInvoice = async (req, res) => {
-  res.status(200).json({ message: "Add Invoice" });
+  const {
+    invoiceNr,
+    placeOfIssue,
+    dateOfIssue,
+    deadlinePayments,
+    paymentMethod,
+    saleDate,
+    accountNumber,
+    buyer,
+    seller,
+    items,
+  } = req.body;
+
+  const invoice = await Invoice.create({
+    userId: req.user._id,
+    invoiceNr,
+    placeOfIssue,
+    dateOfIssue,
+    deadlinePayments,
+    paymentMethod,
+    saleDate,
+    accountNumber,
+    buyer,
+    seller,
+    items,
+  });
+  res.status(200).json(invoice);
 };
 
 // Get Invoice | GET | Private

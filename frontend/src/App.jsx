@@ -1,11 +1,14 @@
 import "./index.css";
-import Button from "@mui/material/Button";
+import { Route, Routes } from "react-router-dom";
+import { SingUp } from "./pages/Sing-up";
+import { SingIn } from "./pages/Sing-in";
 
 function App() {
   return (
-    <div>
-      <Button variant="contained">Contained</Button>
-    </div>
+    <Routes>
+      <Route path="/sing-up" element={<SingUp />} />
+      <Route path="/sing-in" element={<SingIn />} />
+    </Routes>
   );
 }
 

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -17,15 +18,32 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import DomainOutlinedIcon from "@mui/icons-material/DomainOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { useAuth } from "../context/authContext";
 
 const drawerWidth = 280;
 
 export const Home = (props) => {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { setUpdate } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const logoutUser = async () => {
+    try {
+      const res = await fetch("/api/users/logout", {
+        method: "POST",
+        redirect: "follow",
+      });
+      const data = await res.json();
+      if (data) {
+        setUpdate(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const drawer = (
@@ -45,7 +63,7 @@ export const Home = (props) => {
             </ListItemButton>
           </ListItem>
         ))}
-        <ListItem disablePadding>
+        <ListItem onClick={logoutUser} disablePadding>
           <ListItemButton>
             <ListItemIcon>
               <LogoutOutlinedIcon />

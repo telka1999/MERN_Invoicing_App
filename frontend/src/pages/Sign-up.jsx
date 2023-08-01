@@ -8,6 +8,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useAuth } from "../context/authContext";
 import { useState } from "react";
 
 export const SignUp = () => {
@@ -16,6 +17,7 @@ export const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUpdate } = useAuth();
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -43,6 +45,7 @@ export const SignUp = () => {
           setEmail("");
           setPassword("");
           setLoading(false);
+          setUpdate(data);
         }
       } catch (error) {
         setLoading(false);

@@ -14,6 +14,7 @@ export const useAuth = () => {
 function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [update, setUpdate] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -25,10 +26,13 @@ function useProvideAuth() {
         const data = await res.json();
         if (data?.message) {
           setUser(null);
+          setLoading(false);
         } else {
           setUser(data);
+          setLoading(false);
         }
       } catch (error) {
+        setLoading(false);
         console.error(error);
       }
     };
@@ -38,5 +42,6 @@ function useProvideAuth() {
   return {
     user,
     setUpdate,
+    loading,
   };
 }

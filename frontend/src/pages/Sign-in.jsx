@@ -8,19 +8,19 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { useAuth } from "../context/authContext";
 import { useState } from "react";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUpdate } = useAuth();
 
   const loginUser = async (e) => {
     e.preventDefault();
     setLoading(true);
-    console.log(loading, email, password);
-    if (!loading) {
-      console.log("cos");
+    if (!loading && email !== "" && password !== "") {
       try {
         let urlencoded = new URLSearchParams();
         urlencoded.append("email", email);
@@ -39,6 +39,7 @@ export const SignIn = () => {
           setEmail("");
           setPassword("");
           setLoading(false);
+          setUpdate(data);
         }
       } catch (error) {
         setLoading(false);

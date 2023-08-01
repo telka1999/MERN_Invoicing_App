@@ -22,7 +22,13 @@ export const SignUp = () => {
   const registerUser = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (!loading && email && firstName && lastName && password) {
+    if (
+      !loading &&
+      email !== "" &&
+      firstName !== "" &&
+      lastName !== "" &&
+      password !== ""
+    ) {
       try {
         let urlencoded = new URLSearchParams();
         urlencoded.append("name", `${firstName} ${lastName}`);

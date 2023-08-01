@@ -1,5 +1,4 @@
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
@@ -8,43 +7,47 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { useState } from "react";
 
-export const SingUp = () => {
+export const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const submitForm = async (e) => {
+  const registerUser = async (e) => {
     e.preventDefault();
-    try {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    setLoading(true);
+    if (!loading && email && firstName && lastName && password) {
+      try {
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("name", `${firstName} ${lastName}`);
+        urlencoded.append("email", email);
+        urlencoded.append("password", password);
 
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("name", `${firstName} ${lastName}`);
-      urlencoded.append("email", email);
-      urlencoded.append("password", password);
-
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: "follow",
-      };
-      const res = await fetch("/api/users", requestOptions);
-      console.log(res);
-      const data = await res.json();
-      console.log(data);
-      if (data) {
-        setFirstName("");
-        setLastName("");
-        setEmail("");
-        setPassword("");
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: urlencoded,
+          redirect: "follow",
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data) {
+          setFirstName("");
+          setLastName("");
+          setEmail("");
+          setPassword("");
+          setLoading(false);
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -68,7 +71,7 @@ export const SingUp = () => {
         <Box
           component="form"
           noValidate
-          onSubmit={(e) => submitForm(e)}
+          onSubmit={(e) => registerUser(e)}
           sx={{ mt: 3 }}
         >
           <Grid container spacing={2}>
@@ -123,17 +126,19 @@ export const SingUp = () => {
               />
             </Grid>
           </Grid>
-          <Button
+          <LoadingButton
             type="submit"
+            loading={loading}
+            loadingIndicator="Loading…"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
-          </Button>
+            <span>Sign Up</span>
+          </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/sign-in" variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

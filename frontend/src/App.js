@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router-dom";
-import { SingUp } from "./pages/Sing-up";
-import { SingIn } from "./pages/Sing-in";
+import { SignUp } from "./pages/Sign-up";
+import { SignIn } from "./pages/Sign-in";
 
 function App() {
   return (
     <Routes>
-      <Route path="/sing-up" element={<SingUp />} />
-      <Route path="/sing-in" element={<SingIn />} />
+      <Route path="/sign-up" element={<SignUp />} />
+      <Route path="/sign-in" element={<SignIn />} />
     </Routes>
   );
 }

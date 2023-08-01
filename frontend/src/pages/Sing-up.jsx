@@ -16,8 +16,36 @@ export const SingUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("name", `${firstName} ${lastName}`);
+      urlencoded.append("email", email);
+      urlencoded.append("password", password);
+
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: "follow",
+      };
+      const res = await fetch("/api/users", requestOptions);
+      console.log(res);
+      const data = await res.json();
+      console.log(data);
+      if (data) {
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

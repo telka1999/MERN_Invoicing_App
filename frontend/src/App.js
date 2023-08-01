@@ -1,4 +1,3 @@
-import "./index.css";
 import { Route, Routes } from "react-router-dom";
 import { SingUp } from "./pages/Sing-up";
 import { SingIn } from "./pages/Sing-in";

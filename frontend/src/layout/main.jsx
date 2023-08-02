@@ -18,6 +18,7 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import DomainOutlinedIcon from "@mui/icons-material/DomainOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
 const drawerWidth = 280;
@@ -52,16 +53,26 @@ export const MainLayout = (props) => {
       <Divider />
       <List>
         {[
-          { name: "Invoices", icon: <DescriptionOutlinedIcon /> },
-          { name: "Companies", icon: <DomainOutlinedIcon /> },
-          { name: "My Account", icon: <ManageAccountsOutlinedIcon /> },
+          { name: "Invoices", icon: <DescriptionOutlinedIcon />, link: "/" },
+          {
+            name: "Companies",
+            icon: <DomainOutlinedIcon />,
+            link: "/companies",
+          },
+          {
+            name: "My Account",
+            icon: <ManageAccountsOutlinedIcon />,
+            link: "/my-account",
+          },
         ].map((btn) => (
-          <ListItem key={btn.name} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>{btn.icon}</ListItemIcon>
-              <ListItemText primary={btn.name} />
-            </ListItemButton>
-          </ListItem>
+          <Link to={btn.link} key={btn.name}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>{btn.icon}</ListItemIcon>
+                <ListItemText primary={btn.name} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         ))}
         <ListItem onClick={logoutUser} disablePadding>
           <ListItemButton>

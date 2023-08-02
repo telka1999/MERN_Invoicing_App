@@ -1,7 +1,9 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 import { SignUp } from "./pages/Sign-up";
 import { SignIn } from "./pages/Sign-in";
-import { Home } from "./pages/Home";
+import { Invoices } from "./pages/Invoices";
+import { Companies } from "./pages/Companies";
+import { MyAccount } from "./pages/MyAccount";
 import { MainLayout } from "./layout/main";
 import { useAuth } from "./context/authContext";
 
@@ -15,7 +17,15 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={user ? <Home /> : <Navigate to="/sign-in" />}
+              element={user ? <Invoices /> : <Navigate to="/sign-in" />}
+            />
+            <Route
+              path="/companies"
+              element={user ? <Companies /> : <Navigate to="/sign-in" />}
+            />
+            <Route
+              path="/my-account"
+              element={user ? <MyAccount /> : <Navigate to="/sign-in" />}
             />
             <Route
               path="/sign-up"

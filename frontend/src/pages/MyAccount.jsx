@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import { SettingCard } from "../components/setting-card";
 import Typography from "@mui/material/Typography";
 import { useAuth } from "../context/authContext";
+import { useToast } from "../context/toastContext";
 import { useState } from "react";
 
 export const MyAccount = () => {
@@ -17,6 +18,7 @@ export const MyAccount = () => {
   const [company, setCompany] = useState(user.company);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [loadingCompany, setLoadingCompany] = useState(false);
+  const { setOpen, setMessage } = useToast();
 
   const handleChangeProfile = (e, name) => {
     const value = e.target.value;
@@ -57,6 +59,8 @@ export const MyAccount = () => {
             fullName: user.name,
             password: "",
           });
+          setOpen(true);
+          setMessage(data.message);
         } else {
           setProfile({
             email: data.email,
@@ -64,11 +68,15 @@ export const MyAccount = () => {
             password: "",
           });
           setUpdate(data);
+          setOpen(true);
+          setMessage("Successfully updated profile");
         }
         setLoadingProfile(false);
         console.log(data);
       } catch (error) {
         setLoadingProfile(false);
+        setOpen(true);
+        setMessage(error.message);
       }
     }
   };
@@ -102,6 +110,8 @@ export const MyAccount = () => {
         console.log(data);
         if (data?.message) {
           setCompany(user.company);
+          setOpen(true);
+          setMessage(data.message);
         } else {
           setCompany({
             compnayName: data.company.compnayName,
@@ -111,10 +121,14 @@ export const MyAccount = () => {
             code: data.company.code,
           });
           setUpdate(data);
+          setOpen(true);
+          setMessage("Successfully updated profile");
         }
         setLoadingCompany(false);
       } catch (error) {
         setLoadingCompany(false);
+        setOpen(true);
+        setMessage(error.message);
       }
     }
   };

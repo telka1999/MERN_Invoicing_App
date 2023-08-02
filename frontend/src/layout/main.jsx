@@ -15,13 +15,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
-import InputBase from '@mui/material/InputBase';
+import InputBase from "@mui/material/InputBase";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import DomainOutlinedIcon from "@mui/icons-material/DomainOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { useToast } from "../context/toastContext.js";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -66,6 +70,7 @@ export const MainLayout = (props) => {
   const { user, pages } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setUpdate } = useAuth();
+  const { message, open, setOpen } = useToast();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -126,8 +131,40 @@ export const MainLayout = (props) => {
     </div>
   );
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleClose}>
+        UNDO
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
+
   return (
     <Box sx={{ display: "flex" }}>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        action={action}
+      />
       <CssBaseline />
       {user && (
         <AppBar

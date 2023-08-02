@@ -13,7 +13,9 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import { styled, alpha } from "@mui/material/styles";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from '@mui/material/InputBase';
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import DomainOutlinedIcon from "@mui/icons-material/DomainOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
@@ -21,10 +23,47 @@ import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlin
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 
+const Search = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: "40ch",
+    },
+  },
+}));
+
 const drawerWidth = 280;
 
 export const MainLayout = (props) => {
-  const { window, user, pages } = props;
+  const { user, pages } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const { setUpdate } = useAuth();
 
@@ -87,9 +126,6 @@ export const MainLayout = (props) => {
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -111,9 +147,15 @@ export const MainLayout = (props) => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Responsive drawer
-            </Typography>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
           </Toolbar>
         </AppBar>
       )}
@@ -124,7 +166,6 @@ export const MainLayout = (props) => {
           aria-label="mailbox folders"
         >
           <Drawer
-            container={container}
             variant="temporary"
             open={mobileOpen}
             onClose={handleDrawerToggle}

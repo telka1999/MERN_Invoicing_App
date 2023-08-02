@@ -70,6 +70,7 @@ const getUser = async (req, res) => {
     _id: req.user._id,
     name: req.user.name,
     email: req.user.email,
+    company: req.user.company,
   };
 
   res.status(200).json(user);

@@ -35,6 +35,10 @@ function App() {
               path="/sign-in"
               element={user ? <Navigate to="/" /> : <SignIn />}
             />
+            <Route
+              path="*"
+              element={user ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
+            />
           </Routes>
         }
       />

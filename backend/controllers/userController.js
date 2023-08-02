@@ -33,6 +33,13 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      company: {
+        compnayName: "",
+        nip: "",
+        street: "",
+        city: "",
+        code: "",
+      },
     });
 
     if (user) {
@@ -76,6 +83,11 @@ const updateUser = async (req, res) => {
   if (user) {
     user.name = req.body.name || user.name;
     user.email = req.body.email || user.email;
+    user.company.compnayName = req.body.compnayName || user.company.compnayName;
+    user.company.nip = req.body.nip || user.company.nip;
+    user.company.street = req.body.street || user.company.street;
+    user.company.city = req.body.city || user.company.city;
+    user.company.code = req.body.code || user.company.code;
 
     if (req.body.password) {
       user.password = req.body.password;

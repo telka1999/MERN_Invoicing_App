@@ -15,6 +15,13 @@ const userSchema = mongoose.Schema(
       type: String,
       require: true,
     },
+    company: {
+      compnayName: String,
+      nip: String,
+      street: String,
+      city: String,
+      code: String,
+    },
   },
   {
     timestamps: true,

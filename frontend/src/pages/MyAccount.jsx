@@ -16,6 +16,7 @@ export const MyAccount = () => {
   });
   const [company, setCompany] = useState(user.company);
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const [loadingCompany, setLoadingCompany] = useState(false);
 
   const handleChangeProfile = (e, name) => {
     const value = e.target.value;
@@ -68,6 +69,52 @@ export const MyAccount = () => {
         console.log(data);
       } catch (error) {
         setLoadingProfile(false);
+      }
+    }
+  };
+
+  const saveCompany = async (e) => {
+    e.preventDefault();
+    if (
+      !loadingCompany &&
+      (company.compnayName !== user.company.compnayName ||
+        company.code !== user.company.code ||
+        company.nip !== user.company.nip ||
+        company.street !== user.company.street ||
+        company.city !== user.company.city)
+    ) {
+      try {
+        let urlencoded = new URLSearchParams();
+        urlencoded.append("compnayName", company.compnayName);
+        urlencoded.append("code", company.code);
+        urlencoded.append("nip", company.nip);
+        urlencoded.append("street", company.street);
+        urlencoded.append("city", company.city);
+        const res = await fetch("/api/users/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: urlencoded,
+          redirect: "follow",
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data?.message) {
+          setCompany(user.company);
+        } else {
+          setCompany({
+            compnayName: data.company.compnayName,
+            nip: data.company.nip,
+            street: data.company.street,
+            city: data.company.city,
+            code: data.company.code,
+          });
+          setUpdate(data);
+        }
+        setLoadingCompany(false);
+      } catch (error) {
+        setLoadingCompany(false);
       }
     }
   };
@@ -130,6 +177,8 @@ export const MyAccount = () => {
         <SettingCard
           title="Company"
           desc="Here you can update your company data."
+          submit={(e) => saveCompany(e)}
+          loading={loadingCompany}
           content={
             <>
               <Grid item xs={12}>

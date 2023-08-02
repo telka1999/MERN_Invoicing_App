@@ -100,6 +100,13 @@ const updateUser = async (req, res) => {
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      company: {
+        compnayName: updatedUser.company.compnayName,
+        nip: updatedUser.company.nip,
+        street: updatedUser.company.street,
+        city: updatedUser.company.city,
+        code: updatedUser.company.code,
+      },
     });
   } else {
     res.status(404).json({ message: "User not found" });

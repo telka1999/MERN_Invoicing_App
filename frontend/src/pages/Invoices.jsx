@@ -37,7 +37,7 @@ export const Invoices = () => {
 
   return (
     <div>
-      <PageHeader title="Invoices" button={true} />
+      <PageHeader title="Invoices" button={true} link="/add-invoice"/>
       <Box
         sx={{
           marginTop: 3,

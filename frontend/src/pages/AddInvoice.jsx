@@ -19,8 +19,126 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useState } from "react";
+import dayjs from "dayjs";
 
 export const AddInvoice = () => {
+  const [basicInfo, setBasicInfo] = useState({
+    invoiceNr: "",
+    placeOfIssue: "",
+    dateOfIssue: "",
+    deadlinePayments: "",
+    paymentMethod: "",
+    saleDate: "",
+    accountNumber: "",
+  });
+  const [seller, setSeller] = useState({
+    companyName: "",
+    nip: "",
+    street: "",
+    city: "",
+    code: "",
+  });
+  const [buyer, setBuyer] = useState({
+    compnayName: "",
+    nip: "",
+    street: "",
+    city: "",
+    code: "",
+  });
+  const [items, setItems] = useState([
+    {
+      itemName: "",
+      quantity: 1,
+      netPrice: "",
+      netValue: 0,
+      vat: 23,
+      vatSum: 0,
+      grossValue: 0,
+    },
+  ]);
+
+  const handleChangesBasicInfo = (e, name) => {
+    const value = e.target.value;
+    setBasicInfo((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleDatePicker = (value, name) => {
+    setBasicInfo((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleChangesSeller = (e, name) => {
+    const value = e.target.value;
+    setSeller((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleChangesBuyer = (e, name) => {
+    const value = e.target.value;
+    setBuyer((prev) => ({ ...prev, [name]: value }));
+  };
+  const addItem = () => {
+    setItems((prev) => [
+      ...prev,
+      {
+        itemName: "",
+        quantity: 1,
+        netPrice: "",
+        netValue: 0,
+        vat: 23,
+        vatSum: 0,
+        grossValue: 0,
+      },
+    ]);
+  };
+  const deleteItem = (i) => {
+    if (items.length === 1) {
+      return;
+    }
+    const filterItemsToDelet = items.filter((_, index) => {
+      return index !== i;
+    });
+    setItems(filterItemsToDelet);
+  };
+
+  const handleChangesItems = (e, i, n) => {
+    const value = e.target.value;
+    const updatedItem = {
+      itemName: n === "itemName" ? value : items[i].itemName,
+      quantity: n === "quantity" ? value : items[i].quantity,
+      netPrice: n === "netPrice" ? value : items[i].netPrice,
+      netValue: items[i].netValue,
+      vat: n === "vat" ? value : items[i].vat,
+      vatSum: items[i].netValue,
+      grossValue: items[i].grossValue,
+    };
+    const updatedItemDisabled = {
+      itemName: updatedItem.itemName,
+      quantity: updatedItem.quantity,
+      netPrice: updatedItem.netPrice,
+      netValue: updatedItem.quantity * updatedItem.netPrice,
+      vat: updatedItem.vat,
+      vatSum:
+        (updatedItem.vat / 100) * updatedItem.quantity * updatedItem.netPrice,
+      grossValue:
+        (updatedItem.vat / 100) * updatedItem.quantity * updatedItem.netPrice +
+        updatedItem.quantity * updatedItem.netPrice,
+    };
+    const newTabel = items.map((item, index) => {
+      if (i === index) {
+        return updatedItemDisabled;
+      }
+      return item;
+    });
+    setItems(newTabel);
+  };
+
+  const totalNetValue = items.reduce((total, curr) => {
+    return total + curr.netValue;
+  }, 0);
+  const totalVatSum = items.reduce((total, curr) => {
+    return total + curr.vatSum;
+  }, 0);
+  const totalGrossValue = items.reduce((total, curr) => {
+    return total + curr.grossValue;
+  }, 0);
+
   return (
     <Card sx={{ marginTop: 3, padding: 3 }} variant="outlined">
       <Typography variant="h5" component="div">
@@ -33,6 +151,8 @@ export const AddInvoice = () => {
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <TextField
+              onChange={(e) => handleChangesBasicInfo(e, "invoiceNr")}
+              value={basicInfo.invoiceNr}
               name="invoiceNr"
               fullWidth
               id="invoiceNr"
@@ -41,6 +161,8 @@ export const AddInvoice = () => {
           </Grid>
           <Grid item xs={3}>
             <TextField
+              onChange={(e) => handleChangesBasicInfo(e, "placeOfIssue")}
+              value={basicInfo.placeOfIssue}
               name="placeOfIssue"
               fullWidth
               id="placeOfIssue"
@@ -50,14 +172,24 @@ export const AddInvoice = () => {
           <Grid item xs={3} style={{ paddingTop: "8px" }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DatePicker"]}>
-                <DatePicker label="Date Of Issue" />
+                <DatePicker
+                  value={
+                    basicInfo.dateOfIssue ? basicInfo.dateOfIssue : dayjs()
+                  }
+                  onChange={(value) => handleDatePicker(value, "dateOfIssue")}
+                  label="Date Of Issue"
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
           <Grid item xs={3} style={{ paddingTop: "8px" }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DatePicker"]}>
-                <DatePicker label="Sale Date" />
+                <DatePicker
+                  label="Sale Date"
+                  value={basicInfo.saleDate ? basicInfo.saleDate : dayjs()}
+                  onChange={(value) => handleDatePicker(value, "saleDate")}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
@@ -73,6 +205,8 @@ export const AddInvoice = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
+                    value={seller.compnayName}
+                    onChange={(e) => handleChangesSeller(e, "companyName")}
                     name="companyName"
                     fullWidth
                     id="companyName"
@@ -80,10 +214,19 @@ export const AddInvoice = () => {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField name="nip" fullWidth id="nip" label="NIP" />
+                  <TextField
+                    value={seller.nip}
+                    onChange={(e) => handleChangesSeller(e, "nip")}
+                    name="nip"
+                    fullWidth
+                    id="nip"
+                    label="NIP"
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
+                    value={seller.code}
+                    onChange={(e) => handleChangesSeller(e, "code")}
                     fullWidth
                     id="code"
                     label="Code"
@@ -93,6 +236,8 @@ export const AddInvoice = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    value={seller.street}
+                    onChange={(e) => handleChangesSeller(e, "street")}
                     fullWidth
                     id="street"
                     label="Street"
@@ -115,6 +260,8 @@ export const AddInvoice = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
+                    value={buyer.compnayName}
+                    onChange={(e) => handleChangesBuyer(e, "compnayName")}
                     name="companyName"
                     fullWidth
                     id="companyName"
@@ -122,10 +269,19 @@ export const AddInvoice = () => {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <TextField name="nip" fullWidth id="nip" label="NIP" />
+                  <TextField
+                    value={buyer.nip}
+                    onChange={(e) => handleChangesBuyer(e, "nip")}
+                    name="nip"
+                    fullWidth
+                    id="nip"
+                    label="NIP"
+                  />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
+                    value={buyer.code}
+                    onChange={(e) => handleChangesBuyer(e, "code")}
                     fullWidth
                     id="code"
                     label="Code"
@@ -135,6 +291,8 @@ export const AddInvoice = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
+                    value={buyer.street}
+                    onChange={(e) => handleChangesBuyer(e, "street")}
                     fullWidth
                     id="street"
                     label="Street"
@@ -169,68 +327,112 @@ export const AddInvoice = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      <TableRow>
-                        <TableCell sx={{ width: "35%" }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 2,
-                            }}
-                          >
-                            <CloseOutlinedIcon
-                              color="primary"
-                              style={{ cursor: "pointer" }}
-                            />
-                            <OutlinedInput fullWidth />
-                          </Box>
-                        </TableCell>
-                        <TableCell>
-                          <OutlinedInput type="number" fullWidth />
-                        </TableCell>
-                        <TableCell>
-                          <OutlinedInput type="number" fullWidth />
-                        </TableCell>
-                        <TableCell>
-                          <OutlinedInput
-                            type="number"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
-                            disabled
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={23}
-                            fullWidth
-                            displayEmpty
-                            inputProps={{ "aria-label": "Without label" }}
-                          >
-                            <MenuItem value={10}>10%</MenuItem>
-                            <MenuItem value={23}>23%</MenuItem>
-                            <MenuItem value={30}>30%</MenuItem>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                          <OutlinedInput
-                            type="number"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
-                            disabled
-                            fullWidth
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <OutlinedInput
-                            type="number"
-                            style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
-                            disabled
-                            fullWidth
-                          />
-                        </TableCell>
-                      </TableRow>
+                      {items.map((item, i) => {
+                        return (
+                          <TableRow key={i}>
+                            <TableCell sx={{ width: "35%" }}>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 2,
+                                }}
+                              >
+                                <CloseOutlinedIcon
+                                  onClick={() => deleteItem(i)}
+                                  color="primary"
+                                  style={{ cursor: "pointer" }}
+                                />
+                                <OutlinedInput
+                                  value={item.itemName}
+                                  onChange={(e) =>
+                                    handleChangesItems(e, i, "itemName")
+                                  }
+                                  fullWidth
+                                />
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              <OutlinedInput
+                                value={Math.abs(Number(item.quantity))}
+                                onChange={(e) =>
+                                  handleChangesItems(e, i, "quantity")
+                                }
+                                type="number"
+                                fullWidth
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <OutlinedInput
+                                value={Math.abs(Number(item.netPrice)).toFixed(
+                                  2
+                                )}
+                                onChange={(e) =>
+                                  handleChangesItems(e, i, "netPrice")
+                                }
+                                type="number"
+                                fullWidth
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <OutlinedInput
+                                value={Math.abs(Number(item.netValue)).toFixed(
+                                  2
+                                )}
+                                type="number"
+                                style={{
+                                  backgroundColor: "rgba(0, 0, 0, 0.06)",
+                                }}
+                                disabled
+                                fullWidth
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Select
+                                value={item.vat}
+                                onChange={(e) =>
+                                  handleChangesItems(e, i, "vat")
+                                }
+                                fullWidth
+                                displayEmpty
+                                inputProps={{ "aria-label": "Without label" }}
+                              >
+                                <MenuItem value={10}>10%</MenuItem>
+                                <MenuItem value={23}>23%</MenuItem>
+                                <MenuItem value={30}>30%</MenuItem>
+                              </Select>
+                            </TableCell>
+                            <TableCell>
+                              <OutlinedInput
+                                value={Math.abs(Number(item.vatSum)).toFixed(2)}
+                                type="number"
+                                style={{
+                                  backgroundColor: "rgba(0, 0, 0, 0.06)",
+                                }}
+                                disabled
+                                fullWidth
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <OutlinedInput
+                                value={Math.abs(
+                                  Number(item.grossValue)
+                                ).toFixed(2)}
+                                type="number"
+                                style={{
+                                  backgroundColor: "rgba(0, 0, 0, 0.06)",
+                                }}
+                                disabled
+                                fullWidth
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                       <TableRow>
                         <TableCell sx={{ width: "35%" }}>
                           <Button
+                            onClick={addItem}
                             variant="outlined"
                             startIcon={<AddOutlinedIcon />}
                           >
@@ -239,12 +441,17 @@ export const AddInvoice = () => {
                         </TableCell>
                         <TableCell align="right"></TableCell>
                         <TableCell>
-                          <Typography variant="h6" component="div">
+                          <Typography
+                            style={{ fontWeight: "400" }}
+                            variant="h6"
+                            component="div"
+                          >
                             Total:
                           </Typography>
                         </TableCell>
                         <TableCell>
                           <OutlinedInput
+                            value={totalNetValue}
                             type="number"
                             style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                             disabled
@@ -254,6 +461,7 @@ export const AddInvoice = () => {
                         <TableCell></TableCell>
                         <TableCell>
                           <OutlinedInput
+                            value={totalVatSum}
                             type="number"
                             style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                             disabled
@@ -262,6 +470,7 @@ export const AddInvoice = () => {
                         </TableCell>
                         <TableCell>
                           <OutlinedInput
+                            value={totalGrossValue}
                             type="number"
                             style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                             disabled
@@ -275,16 +484,37 @@ export const AddInvoice = () => {
               </Grid>
             </Box>
           </Grid>
+          <Grid item xs={3} style={{ paddingTop: "8px" }} marginTop={2}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  value={
+                    basicInfo.deadlinePayments
+                      ? basicInfo.deadlinePayments
+                      : dayjs()
+                  }
+                  onChange={(value) =>
+                    handleDatePicker(value, "deadlinePayments")
+                  }
+                  label="Deadline Payments"
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
           <Grid item xs={3} marginTop={2}>
             <TextField
+              onChange={(e) => handleChangesBasicInfo(e, "paymentMethod")}
+              value={basicInfo.paymentMethod}
               name="paymentMethod"
               fullWidth
               id="paymentMethod"
               label="Payment Method"
             />
           </Grid>
-          <Grid item xs={9} marginTop={2}>
+          <Grid item xs={6} marginTop={2}>
             <TextField
+              onChange={(e) => handleChangesBasicInfo(e, "accountNumber")}
+              value={basicInfo.accountNumber}
               name="accountNumber"
               fullWidth
               id="accountNumber"

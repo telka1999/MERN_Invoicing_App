@@ -4,7 +4,6 @@ import { SignIn } from "./pages/Sign-in";
 import { Invoices } from "./pages/Invoices";
 import { SingleInvoice } from "./pages/SingleInvoice";
 import { AddInvoice } from "./pages/AddInvoice";
-import { Companies } from "./pages/Companies";
 import { MyAccount } from "./pages/MyAccount";
 import { MainLayout } from "./layout/main";
 import { useAuth } from "./context/authContext";
@@ -28,10 +27,6 @@ function App() {
             <Route
               path="/add-invoice"
               element={user ? <AddInvoice /> : <Navigate to="/sign-in" />}
-            />
-            <Route
-              path="/companies"
-              element={user ? <Companies /> : <Navigate to="/sign-in" />}
             />
             <Route
               path="/my-account"

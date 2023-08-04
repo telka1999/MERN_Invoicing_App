@@ -17,7 +17,6 @@ import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import DomainOutlinedIcon from "@mui/icons-material/DomainOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -98,11 +97,6 @@ export const MainLayout = (props) => {
       <List>
         {[
           { name: "Invoices", icon: <DescriptionOutlinedIcon />, link: "/" },
-          {
-            name: "Companies",
-            icon: <DomainOutlinedIcon />,
-            link: "/companies",
-          },
           {
             name: "My Account",
             icon: <ManageAccountsOutlinedIcon />,

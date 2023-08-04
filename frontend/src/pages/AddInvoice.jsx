@@ -195,7 +195,7 @@ export const AddInvoice = () => {
         } else {
           setOpen(true);
           setMessage("Successfully created invoice");
-          navigate("/");
+          navigate(`/invoice/${data._id}`);
         }
         setLoading(false);
       } catch (error) {

@@ -2,6 +2,7 @@ import { PageHeader } from "../components/pageHeader";
 import { Box } from "@mui/material";
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -92,11 +93,19 @@ export const Invoices = () => {
                     key={invoice._id}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
-                      cursor: "pointer",
                     }}
                   >
                     <TableCell component="th" scope="row">
-                      {invoice.invoiceNr}
+                      <Link
+                        to={`invoice/${invoice._id}`}
+                        style={{
+                          cursor: "pointer",
+                          textDecorationLine: "underline",
+                          color: "#1976d2",
+                        }}
+                      >
+                        {invoice.invoiceNr}
+                      </Link>
                     </TableCell>
                     <TableCell>{invoice.buyer.compnayName}</TableCell>
                     <TableCell>{dateReadable(invoice.dateOfIssue)}</TableCell>

@@ -2,6 +2,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import { SignUp } from "./pages/Sign-up";
 import { SignIn } from "./pages/Sign-in";
 import { Invoices } from "./pages/Invoices";
+import { SingleInvoice } from "./pages/SingleInvoice";
 import { AddInvoice } from "./pages/AddInvoice";
 import { Companies } from "./pages/Companies";
 import { MyAccount } from "./pages/MyAccount";
@@ -19,6 +20,10 @@ function App() {
             <Route
               path="/"
               element={user ? <Invoices /> : <Navigate to="/sign-in" />}
+            />{" "}
+            <Route
+              path="/invoice/:id"
+              element={user ? <SingleInvoice /> : <Navigate to="/sign-in" />}
             />
             <Route
               path="/add-invoice"

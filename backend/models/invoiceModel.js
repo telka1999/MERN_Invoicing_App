@@ -12,11 +12,11 @@ const invoiceSchema = mongoose.Schema(
       require: true,
     },
     dateOfIssue: {
-      type: String,
+      type: Date,
       require: true,
     },
     deadlinePayments: {
-      type: String,
+      type: Date,
       require: true,
     },
     paymentMethod: {
@@ -24,7 +24,7 @@ const invoiceSchema = mongoose.Schema(
       require: true,
     },
     saleDate: {
-      type: String,
+      type: Date,
       require: true,
     },
     accountNumber: {
@@ -47,10 +47,7 @@ const invoiceSchema = mongoose.Schema(
     },
     items: [
       {
-        itemName: {
-          type: String,
-          required: true,
-        },
+        itemName: String,
         quantity: {
           type: Number,
           required: true,

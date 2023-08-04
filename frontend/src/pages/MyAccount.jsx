@@ -107,7 +107,6 @@ export const MyAccount = () => {
           redirect: "follow",
         });
         const data = await res.json();
-        console.log(data);
         if (data?.message) {
           setCompany(user.company);
           setOpen(true);

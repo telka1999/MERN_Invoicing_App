@@ -20,24 +20,30 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useState } from "react";
+import { useToast } from "../context/toastContext";
+import { useAuth } from "../context/authContext";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 export const AddInvoice = () => {
+  const { user } = useAuth();
+  const { setOpen, setMessage } = useToast();
+  const navigate = useNavigate();
   const [basicInfo, setBasicInfo] = useState({
     invoiceNr: "",
     placeOfIssue: "",
-    dateOfIssue: "",
-    deadlinePayments: "",
+    dateOfIssue: dayjs(),
+    deadlinePayments: dayjs(),
     paymentMethod: "",
-    saleDate: "",
+    saleDate: dayjs(),
     accountNumber: "",
   });
   const [seller, setSeller] = useState({
-    companyName: "",
-    nip: "",
-    street: "",
-    city: "",
-    code: "",
+    companyName: user.company.compnayName,
+    nip: user.company.nip,
+    street: user.company.street,
+    city: user.company.city,
+    code: user.company.code,
   });
   const [buyer, setBuyer] = useState({
     compnayName: "",
@@ -57,7 +63,7 @@ export const AddInvoice = () => {
       grossValue: 0,
     },
   ]);
-
+  const [loading, setLoading] = useState(false);
   const handleChangesBasicInfo = (e, name) => {
     const value = e.target.value;
     setBasicInfo((prev) => ({ ...prev, [name]: value }));
@@ -96,7 +102,6 @@ export const AddInvoice = () => {
     });
     setItems(filterItemsToDelet);
   };
-
   const handleChangesItems = (e, i, n) => {
     const value = e.target.value;
     const updatedItem = {
@@ -128,7 +133,6 @@ export const AddInvoice = () => {
     });
     setItems(newTabel);
   };
-
   const totalNetValue = items.reduce((total, curr) => {
     return total + curr.netValue;
   }, 0);
@@ -138,6 +142,69 @@ export const AddInvoice = () => {
   const totalGrossValue = items.reduce((total, curr) => {
     return total + curr.grossValue;
   }, 0);
+  const saveInvoice = async (e) => {
+    e.preventDefault();
+    if (!loading) {
+      setLoading(true);
+      const itemsArrForDB = items.map((item) => {
+        return {
+          itemName: item.itemName,
+          quantity: item.quantity ? item.quantity : 1,
+          price: item.netPrice ? item.netPrice : 0,
+          vat: item.vat,
+        };
+      });
+      try {
+        const raw = JSON.stringify({
+          invoiceNr: basicInfo.invoiceNr,
+          placeOfIssue: basicInfo.placeOfIssue,
+          dateOfIssue: new Date(basicInfo.dateOfIssue),
+          deadlinePayments: new Date(basicInfo.deadlinePayments),
+          paymentMethod: basicInfo.paymentMethod,
+          saleDate: new Date(basicInfo.saleDate),
+          accountNumber: basicInfo.accountNumber,
+          buyer: {
+            compnayName: buyer.compnayName,
+            nip: buyer.nip,
+            street: buyer.street,
+            city: buyer.city,
+            code: buyer.code,
+          },
+          seller: {
+            compnayName: seller.compnayName,
+            nip: seller.nip,
+            street: seller.street,
+            city: seller.city,
+            code: seller.code,
+          },
+          items: itemsArrForDB,
+        });
+        const res = await fetch("/api/invoices", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: raw,
+          redirect: "follow",
+        });
+
+        const data = await res.json();
+        if (data?.message) {
+          setOpen(true);
+          setMessage(data.message);
+        } else {
+          setOpen(true);
+          setMessage("Successfully created invoice");
+          navigate("/");
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setOpen(true);
+        setMessage(error.message);
+      }
+    }
+  };
 
   return (
     <Card sx={{ marginTop: 3, padding: 3 }} variant="outlined">
@@ -147,7 +214,12 @@ export const AddInvoice = () => {
       <Typography variant="body2" marginTop={1}>
         File out form in order to create invoice.
       </Typography>
-      <Box component="form" noValidate onSubmit={() => {}} sx={{ mt: 3 }}>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={(e) => saveInvoice(e)}
+        sx={{ mt: 3 }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <TextField
@@ -205,7 +277,7 @@ export const AddInvoice = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
-                    value={seller.compnayName}
+                    value={seller.companyName}
                     onChange={(e) => handleChangesSeller(e, "companyName")}
                     name="companyName"
                     fullWidth
@@ -213,7 +285,7 @@ export const AddInvoice = () => {
                     label="Company Name"
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <TextField
                     value={seller.nip}
                     onChange={(e) => handleChangesSeller(e, "nip")}
@@ -234,7 +306,7 @@ export const AddInvoice = () => {
                     autoComplete="code"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     value={seller.street}
                     onChange={(e) => handleChangesSeller(e, "street")}
@@ -243,6 +315,16 @@ export const AddInvoice = () => {
                     label="Street"
                     name="street"
                     autoComplete="street"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    value={seller.city}
+                    onChange={(e) => handleChangesSeller(e, "city")}
+                    name="city"
+                    fullWidth
+                    id="city"
+                    label="City"
                   />
                 </Grid>
               </Grid>
@@ -268,7 +350,7 @@ export const AddInvoice = () => {
                     label="Company Name"
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <TextField
                     value={buyer.nip}
                     onChange={(e) => handleChangesBuyer(e, "nip")}
@@ -289,7 +371,7 @@ export const AddInvoice = () => {
                     autoComplete="code"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <TextField
                     value={buyer.street}
                     onChange={(e) => handleChangesBuyer(e, "street")}
@@ -298,6 +380,16 @@ export const AddInvoice = () => {
                     label="Street"
                     name="street"
                     autoComplete="street"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    value={buyer.city}
+                    onChange={(e) => handleChangesBuyer(e, "city")}
+                    name="city"
+                    fullWidth
+                    id="city"
+                    label="City"
                   />
                 </Grid>
               </Grid>
@@ -525,7 +617,7 @@ export const AddInvoice = () => {
         <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
           <LoadingButton
             type="submit"
-            loading={false}
+            loading={loading}
             loadingIndicator="Loading…"
             variant="contained"
             sx={{ mt: 3 }}

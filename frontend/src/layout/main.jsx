@@ -95,7 +95,7 @@ export const MainLayout = (props) => {
     <div>
       <Toolbar>
         <Typography variant="h1" sx={{ fontSize: 24, fontWeight: "400" }}>
-          Invoice <span style={{ color: "rgb(25, 118, 210)" }}>App</span>
+          Invoicing <span style={{ color: "rgb(25, 118, 210)" }}>App</span>
         </Typography>
       </Toolbar>
       <Divider />

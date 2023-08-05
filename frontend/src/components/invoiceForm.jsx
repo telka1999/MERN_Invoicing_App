@@ -361,7 +361,7 @@ export const InvoiceForm = ({
                       </TableCell>
                       <TableCell>
                         <OutlinedInput
-                          value={totalNetValue}
+                          value={Number(totalNetValue).toFixed(2)}
                           type="number"
                           style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                           disabled
@@ -371,7 +371,7 @@ export const InvoiceForm = ({
                       <TableCell></TableCell>
                       <TableCell>
                         <OutlinedInput
-                          value={totalVatSum}
+                          value={Number(totalVatSum).toFixed(2)}
                           type="number"
                           style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                           disabled
@@ -380,7 +380,7 @@ export const InvoiceForm = ({
                       </TableCell>
                       <TableCell>
                         <OutlinedInput
-                          value={totalGrossValue}
+                          value={Number(totalGrossValue).toFixed(2)}
                           type="number"
                           style={{ backgroundColor: "rgba(0, 0, 0, 0.06)" }}
                           disabled

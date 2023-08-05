@@ -172,7 +172,69 @@ export const EditInvoice = () => {
   const totalGrossValue = items.reduce((total, curr) => {
     return total + curr.grossValue;
   }, 0);
-
+  const saveChanges = async (e) => {
+    e.preventDefault();
+    if (!loading) {
+      setLoading(true);
+      const itemsArrForDB = items.map((item) => {
+        return {
+          itemName: item.itemName,
+          quantity: item.quantity ? item.quantity : 1,
+          price: item.netPrice ? item.netPrice : 0,
+          vat: item.vat,
+        };
+      });
+      try {
+        const raw = JSON.stringify({
+          invoiceId: id,
+          invoiceNr: basicInfo.invoiceNr,
+          placeOfIssue: basicInfo.placeOfIssue,
+          dateOfIssue: new Date(basicInfo.dateOfIssue),
+          deadlinePayments: new Date(basicInfo.deadlinePayments),
+          paymentMethod: basicInfo.paymentMethod,
+          saleDate: new Date(basicInfo.saleDate),
+          accountNumber: basicInfo.accountNumber,
+          buyer: {
+            compnayName: buyer.compnayName,
+            nip: buyer.nip,
+            street: buyer.street,
+            city: buyer.city,
+            code: buyer.code,
+          },
+          seller: {
+            compnayName: seller.compnayName,
+            nip: seller.nip,
+            street: seller.street,
+            city: seller.city,
+            code: seller.code,
+          },
+          items: itemsArrForDB,
+        });
+        const res = await fetch("/api/invoices", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: raw,
+          redirect: "follow",
+        });
+        const data = await res.json();
+        if (data?.message) {
+          setOpen(true);
+          setMessage(data.message);
+        } else {
+          setOpen(true);
+          setMessage("Successfully edited invoice");
+          navigate(`/invoice/${data._id}`);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setOpen(true);
+        setMessage(error.message);
+      }
+    }
+  };
   return (
     <Card sx={{ marginTop: 3, padding: 3 }} variant="outlined">
       <Typography variant="h5" component="div">
@@ -186,7 +248,7 @@ export const EditInvoice = () => {
         seller={seller}
         buyer={buyer}
         items={items}
-        saveInvoice={() => {}}
+        saveInvoice={saveChanges}
         handleChangesBasicInfo={handleChangesBasicInfo}
         handleDatePicker={handleDatePicker}
         handleChangesSeller={handleChangesSeller}

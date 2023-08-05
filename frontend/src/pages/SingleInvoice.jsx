@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "../context/toastContext";
 import { useNavigate } from "react-router-dom";
 import dateReadable from "../utils/dateReadable";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const SingleInvoice = () => {
   const { id } = useParams();
@@ -113,7 +114,16 @@ export const SingleInvoice = () => {
     });
   };
   return loading ? (
-    <div></div>
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 112px)",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress color="primary" />
+    </Box>
   ) : (
     <>
       <Dialog
@@ -521,7 +531,13 @@ export const SingleInvoice = () => {
                     </Typography>
                   </Stack>
                 </Box>
-                <Box sx={{ width: "50%" }}>
+                <Box
+                  sx={{
+                    width: "50%",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
                   <Typography variant="h6" component="div">
                     {Number(total.grossValue).toFixed(2)} USD due{" "}
                     {dateReadable(invoice.deadlinePayments)}

@@ -11,11 +11,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
 import dateReadable from "../utils/dateReadable";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const Invoices = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [invoices, setInvoices] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -34,12 +36,23 @@ export const Invoices = () => {
       });
       const data = await res.json();
       setInvoices(data);
+      setLoading(false);
     };
     fetchInvoices();
   }, []);
 
-
-  return (
+  return loading ? (
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 112px)",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress color="primary" />
+    </Box>
+  ) : (
     <div>
       <PageHeader title="Invoices" button={true} link="/add-invoice" />
       <Box

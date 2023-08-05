@@ -5,13 +5,15 @@ import { InvoiceForm } from "../components/invoiceForm";
 import { useState, useEffect } from "react";
 import { useToast } from "../context/toastContext";
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
 import dayjs from "dayjs";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export const EditInvoice = () => {
   const { id } = useParams();
   const { setOpen, setMessage } = useToast();
   const navigate = useNavigate();
-
+  const [loadingData, setLoadingData] = useState(true);
   const [basicInfo, setBasicInfo] = useState({
     invoiceNr: "",
     placeOfIssue: "",
@@ -91,6 +93,7 @@ export const EditInvoice = () => {
         code: data.buyer.code,
       });
       setItems(itemsExtended);
+      setLoadingData(false);
     };
     fetchSingleInvoice();
   }, []);
@@ -235,7 +238,18 @@ export const EditInvoice = () => {
       }
     }
   };
-  return (
+  return loadingData ? (
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 112px)",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress color="primary" />
+    </Box>
+  ) : (
     <Card sx={{ marginTop: 3, padding: 3 }} variant="outlined">
       <Typography variant="h5" component="div">
         Edit Invoice

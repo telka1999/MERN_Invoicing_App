@@ -10,21 +10,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TablePagination from "@mui/material/TablePagination";
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import dateReadable from "../utils/dateReadable";
 
 export const Invoices = () => {
   const [page, setPage] = useState(0);
@@ -52,10 +38,6 @@ export const Invoices = () => {
     fetchInvoices();
   }, []);
 
-  const dateReadable = (date) => {
-    const d = new Date(date);
-    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-  };
 
   return (
     <div>

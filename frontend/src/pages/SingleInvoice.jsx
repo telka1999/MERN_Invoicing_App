@@ -13,11 +13,54 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { useState, useEffect } from "react";
+import dateReadable from "../utils/dateReadable";
 
 export const SingleInvoice = () => {
   const { id } = useParams();
-  console.log(id);
-  return (
+  const [invoice, setInvoice] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState({
+    netValue: 0,
+    vatSum: 0,
+    grossValue: 0,
+  });
+
+  useEffect(() => {
+    const fetchSingleInvoice = async () => {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: "GET",
+        redirect: "follow",
+      });
+      const data = await res.json();
+      const totalNetValue = data.items.reduce((total, curr) => {
+        const netValue = curr.quantity * curr.price;
+        return total + netValue;
+      }, 0);
+      const totalVatSum = data.items.reduce((total, curr) => {
+        const vatSum = (curr.vat / 100) * curr.quantity * curr.price;
+        return total + vatSum;
+      }, 0);
+      const totalGrossValue = data.items.reduce((total, curr) => {
+        const grossValue =
+          (curr.vat / 100) * curr.quantity * curr.price +
+          curr.quantity * curr.price;
+        return total + grossValue;
+      }, 0);
+      setInvoice(data);
+      setTotal({
+        netValue: totalNetValue,
+        vatSum: totalVatSum,
+        grossValue: totalGrossValue,
+      });
+      setLoading(false);
+    };
+    fetchSingleInvoice();
+  }, []);
+
+  return loading ? (
+    <div></div>
+  ) : (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Box
         sx={{
@@ -28,7 +71,7 @@ export const SingleInvoice = () => {
         }}
       >
         <div>
-          <Typography variant="h5">NR123456</Typography>
+          <Typography variant="h5">{invoice.invoiceNr}</Typography>
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <Button variant="outlined" startIcon={<DeleteIcon />}>
@@ -81,28 +124,28 @@ export const SingleInvoice = () => {
               </Stack>
               <Stack>
                 <Typography sx={{ fontSize: 14 }} variant="h7" component="div">
-                  NR123456
+                  {invoice.invoiceNr}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  Bodzentyn
+                  {invoice.placeOfIssue}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  4 August 2023
+                  {dateReadable(invoice.dateOfIssue)}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  4 August 2023
+                  {dateReadable(invoice.saleDate)}
                 </Typography>
               </Stack>
             </Box>
@@ -122,28 +165,28 @@ export const SingleInvoice = () => {
                   variant="h7"
                   component="div"
                 >
-                  Company One
+                  {invoice.seller.compnayName}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  NIP: 123142142
+                  NIP: {invoice.seller.nip}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  Kowalskiego 12
+                  {invoice.seller.street}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  00-001 Warszaw
+                  {`${invoice.seller.code} ${invoice.seller.city}`}
                 </Typography>
               </Stack>
             </Box>
@@ -161,28 +204,28 @@ export const SingleInvoice = () => {
                   variant="h7"
                   component="div"
                 >
-                  Company Two
+                  {invoice.buyer.compnayName}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  NIP: 012091284
+                  NIP: {invoice.buyer.nip}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  Nowakowska 12
+                  {invoice.buyer.street}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  22-102 Góra Kalwari
+                  {`${invoice.buyer.code} ${invoice.buyer.city}`}
                 </Typography>
               </Stack>
             </Box>
@@ -206,71 +249,80 @@ export const SingleInvoice = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell sx={{ width: "35%" }}>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          Item One
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          1
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          100
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          100
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          23%
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          23
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography
-                          sx={{ fontSize: 14 }}
-                          variant="h7"
-                          component="div"
-                        >
-                          123
-                        </Typography>
-                      </TableCell>
-                    </TableRow>
+                    {invoice.items.map((item) => {
+                      return (
+                        <TableRow key={item._id}>
+                          <TableCell sx={{ width: "35%" }}>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {item.itemName}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {item.quantity}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(item.price).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(item.quantity * item.price).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {item.vat}%
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(
+                                (item.vat / 100) * item.quantity * item.price
+                              ).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(
+                                (item.vat / 100) * item.quantity * item.price +
+                                  item.quantity * item.price
+                              ).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                     <TableRow>
                       <TableCell sx={{ width: "35%" }}></TableCell>
                       <TableCell align="right"></TableCell>
@@ -289,7 +341,7 @@ export const SingleInvoice = () => {
                           variant="h7"
                           component="div"
                         >
-                          100
+                          {Number(total.netValue).toFixed(2)}
                         </Typography>
                       </TableCell>
                       <TableCell></TableCell>
@@ -299,7 +351,7 @@ export const SingleInvoice = () => {
                           variant="h7"
                           component="div"
                         >
-                          23
+                          {Number(total.vatSum).toFixed(2)}
                         </Typography>
                       </TableCell>
                       <TableCell>
@@ -308,7 +360,7 @@ export const SingleInvoice = () => {
                           variant="h7"
                           component="div"
                         >
-                          123
+                          {Number(total.grossValue).toFixed(2)}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -344,27 +396,28 @@ export const SingleInvoice = () => {
               </Stack>
               <Stack>
                 <Typography sx={{ fontSize: 14 }} variant="h7" component="div">
-                  4 August 2023
+                  {dateReadable(invoice.deadlinePayments)}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  Cash
+                  {invoice.paymentMethod}
                 </Typography>
                 <Typography
                   sx={{ marginTop: "4px", fontSize: 14 }}
                   variant="h7"
                   component="div"
                 >
-                  12312312321112312321
+                  {invoice.accountNumber}
                 </Typography>
               </Stack>
             </Box>
             <Box sx={{ width: "50%" }}>
               <Typography variant="h6" component="div">
-                120,00 USD due 4 August 2023
+                {Number(total.grossValue).toFixed(2)} USD due{" "}
+                {dateReadable(invoice.deadlinePayments)}
               </Typography>
             </Box>
           </Box>

@@ -18,6 +18,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import jsPDF from "jspdf";
 import { useState, useEffect } from "react";
 import { useToast } from "../context/toastContext";
 import { useNavigate } from "react-router-dom";
@@ -35,15 +36,12 @@ export const SingleInvoice = () => {
     grossValue: 0,
   });
   const [open, setOpenDelete] = useState(false);
-
   const handleClickOpen = () => {
     setOpenDelete(true);
   };
-
   const handleClose = () => {
     setOpenDelete(false);
   };
-
   useEffect(() => {
     const fetchSingleInvoice = async () => {
       const res = await fetch(`/api/invoices/${id}`, {
@@ -75,7 +73,6 @@ export const SingleInvoice = () => {
     };
     fetchSingleInvoice();
   }, []);
-
   const deletInvoice = async () => {
     try {
       var raw = JSON.stringify({
@@ -102,7 +99,19 @@ export const SingleInvoice = () => {
       setMessage(error.message);
     }
   };
-
+  const savePDF = () => {
+    const doc = new jsPDF({
+      orientation: "p",
+      unit: "px",
+      format: "a4",
+      hotfixes: ["px_scaling"],
+    });
+    doc.html(document.getElementById("pdf"), {
+      callback: function (pdf) {
+        pdf.save(`${id}.pdf`);
+      },
+    });
+  };
   return loading ? (
     <div></div>
   ) : (
@@ -154,6 +163,7 @@ export const SingleInvoice = () => {
               Edit
             </Button>
             <Button
+              onClick={savePDF}
               variant="contained"
               startIcon={<FileDownloadOutlinedIcon />}
             >
@@ -162,356 +172,364 @@ export const SingleInvoice = () => {
           </div>
         </Box>
         <Box sx={{ border: "1px solid rgba(0, 0, 0, 0.12)" }}>
-          <Box sx={{ padding: 4 }}>
-            <Typography sx={{ marginBottom: 4 }} variant="h4" component="div">
-              Invoice
-            </Typography>
-            <Box sx={{ display: "flex", gap: 6, marginBottom: 4 }}>
-              <Box sx={{ display: "flex", gap: 3 }}>
-                <Stack>
-                  <Typography
-                    sx={{ fontWeight: "500", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Invoice Nr
-                  </Typography>
-                  <Typography
-                    sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Place Of Issue
-                  </Typography>
-                  <Typography
-                    sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Date Of Issue
-                  </Typography>
-                  <Typography
-                    sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Sale Date
-                  </Typography>
-                </Stack>
-                <Stack>
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.invoiceNr}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.placeOfIssue}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {dateReadable(invoice.dateOfIssue)}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {dateReadable(invoice.saleDate)}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", gap: 6, marginBottom: 4 }}>
-              <Box sx={{ width: "50%" }}>
-                <Stack>
-                  <Typography
-                    sx={{ fontWeight: "500" }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Seller
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.seller.compnayName}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    NIP: {invoice.seller.nip}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.seller.street}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {`${invoice.seller.code} ${invoice.seller.city}`}
-                  </Typography>
-                </Stack>
-              </Box>
-              <Box sx={{ width: "50%" }}>
-                <Stack>
-                  <Typography
-                    sx={{ fontWeight: "500" }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Buyer
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.buyer.compnayName}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    NIP: {invoice.buyer.nip}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.buyer.street}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {`${invoice.buyer.code} ${invoice.buyer.city}`}
-                  </Typography>
-                </Stack>
-              </Box>
-            </Box>
-            <Box sx={{ marginBottom: 4 }}>
-              <Typography
-                sx={{ fontWeight: "500" }}
-                variant="h7"
-                component="div"
-              >
-                Items
+          <div
+            style={{ marginLeft: "auto", marginRight: "auto", width: "800px" }}
+          >
+            <div id="pdf" style={{ padding: "32px" }}>
+              <Typography sx={{ marginBottom: 4 }} variant="h4" component="div">
+                Invoice
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Item Name</TableCell>
-                        <TableCell>Qty.</TableCell>
-                        <TableCell>Net Price</TableCell>
-                        <TableCell>Net Value</TableCell>
-                        <TableCell>VAT</TableCell>
-                        <TableCell>Vat Sum</TableCell>
-                        <TableCell>Gross Value</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {invoice.items.map((item) => {
-                        return (
-                          <TableRow key={item._id}>
-                            <TableCell sx={{ width: "35%" }}>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {item.itemName}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {item.quantity}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {Number(item.price).toFixed(2)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {Number(item.quantity * item.price).toFixed(2)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {item.vat}%
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {Number(
-                                  (item.vat / 100) * item.quantity * item.price
-                                ).toFixed(2)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{ fontSize: 14 }}
-                                variant="h7"
-                                component="div"
-                              >
-                                {Number(
-                                  (item.vat / 100) *
-                                    item.quantity *
-                                    item.price +
-                                    item.quantity * item.price
-                                ).toFixed(2)}
-                              </Typography>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                      <TableRow>
-                        <TableCell sx={{ width: "35%" }}></TableCell>
-                        <TableCell align="right"></TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "500" }}
-                            variant="h7"
-                            component="div"
-                          >
-                            Total:
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontSize: 14 }}
-                            variant="h7"
-                            component="div"
-                          >
-                            {Number(total.netValue).toFixed(2)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontSize: 14 }}
-                            variant="h7"
-                            component="div"
-                          >
-                            {Number(total.vatSum).toFixed(2)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontSize: 14 }}
-                            variant="h7"
-                            component="div"
-                          >
-                            {Number(total.grossValue).toFixed(2)}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
+              <Box sx={{ display: "flex", gap: 6, marginBottom: 4 }}>
+                <Box sx={{ display: "flex", gap: 3 }}>
+                  <Stack>
+                    <Typography
+                      sx={{ fontWeight: "500", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Invoice Nr
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Place Of Issue
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Date Of Issue
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Sale Date
+                    </Typography>
+                  </Stack>
+                  <Stack>
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.invoiceNr}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.placeOfIssue}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {dateReadable(invoice.dateOfIssue)}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {dateReadable(invoice.saleDate)}
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Box>
+              <Box sx={{ display: "flex", gap: 6, marginBottom: 4 }}>
+                <Box sx={{ width: "50%" }}>
+                  <Stack>
+                    <Typography
+                      sx={{ fontWeight: "500" }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Seller
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.seller.compnayName}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      NIP: {invoice.seller.nip}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.seller.street}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {`${invoice.seller.code} ${invoice.seller.city}`}
+                    </Typography>
+                  </Stack>
+                </Box>
+                <Box sx={{ width: "50%" }}>
+                  <Stack>
+                    <Typography
+                      sx={{ fontWeight: "500" }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Buyer
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.buyer.compnayName}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      NIP: {invoice.buyer.nip}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.buyer.street}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {`${invoice.buyer.code} ${invoice.buyer.city}`}
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Box>
+              <Box sx={{ marginBottom: 4 }}>
+                <Typography
+                  sx={{ fontWeight: "500" }}
+                  variant="h7"
+                  component="div"
+                >
+                  Items
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Item Name</TableCell>
+                          <TableCell>Qty.</TableCell>
+                          <TableCell>Net Price</TableCell>
+                          <TableCell>Net Value</TableCell>
+                          <TableCell>VAT</TableCell>
+                          <TableCell>Vat Sum</TableCell>
+                          <TableCell>Gross Value</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {invoice.items.map((item) => {
+                          return (
+                            <TableRow key={item._id}>
+                              <TableCell sx={{ width: "35%" }}>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {item.itemName}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {item.quantity}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {Number(item.price).toFixed(2)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {Number(item.quantity * item.price).toFixed(
+                                    2
+                                  )}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {item.vat}%
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {Number(
+                                    (item.vat / 100) *
+                                      item.quantity *
+                                      item.price
+                                  ).toFixed(2)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  sx={{ fontSize: 14 }}
+                                  variant="h7"
+                                  component="div"
+                                >
+                                  {Number(
+                                    (item.vat / 100) *
+                                      item.quantity *
+                                      item.price +
+                                      item.quantity * item.price
+                                  ).toFixed(2)}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        <TableRow>
+                          <TableCell sx={{ width: "35%" }}></TableCell>
+                          <TableCell align="right"></TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontWeight: "500" }}
+                              variant="h7"
+                              component="div"
+                            >
+                              Total:
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(total.netValue).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell></TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(total.vatSum).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              variant="h7"
+                              component="div"
+                            >
+                              {Number(total.grossValue).toFixed(2)}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Box>
-            <Box sx={{ display: "flex" }}>
-              <Box sx={{ display: "flex", gap: 3, width: "50%" }}>
-                <Stack>
-                  <Typography
-                    sx={{ fontWeight: "500", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Deadline Payments
-                  </Typography>
-                  <Typography
-                    sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Payment Method
-                  </Typography>
-                  <Typography
-                    sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    Account Number
-                  </Typography>
-                </Stack>
-                <Stack>
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
+              </Box>
+              <Box sx={{ display: "flex" }}>
+                <Box sx={{ display: "flex", gap: 3, width: "50%" }}>
+                  <Stack>
+                    <Typography
+                      sx={{ fontWeight: "500", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Deadline Payments
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Payment Method
+                    </Typography>
+                    <Typography
+                      sx={{ fontWeight: "500", marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      Account Number
+                    </Typography>
+                  </Stack>
+                  <Stack>
+                    <Typography
+                      sx={{ fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {dateReadable(invoice.deadlinePayments)}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.paymentMethod}
+                    </Typography>
+                    <Typography
+                      sx={{ marginTop: "4px", fontSize: 14 }}
+                      variant="h7"
+                      component="div"
+                    >
+                      {invoice.accountNumber}
+                    </Typography>
+                  </Stack>
+                </Box>
+                <Box sx={{ width: "50%" }}>
+                  <Typography variant="h6" component="div">
+                    {Number(total.grossValue).toFixed(2)} USD due{" "}
                     {dateReadable(invoice.deadlinePayments)}
                   </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.paymentMethod}
-                  </Typography>
-                  <Typography
-                    sx={{ marginTop: "4px", fontSize: 14 }}
-                    variant="h7"
-                    component="div"
-                  >
-                    {invoice.accountNumber}
-                  </Typography>
-                </Stack>
+                </Box>
               </Box>
-              <Box sx={{ width: "50%" }}>
-                <Typography variant="h6" component="div">
-                  {Number(total.grossValue).toFixed(2)} USD due{" "}
-                  {dateReadable(invoice.deadlinePayments)}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </Box>
       </Container>
     </>

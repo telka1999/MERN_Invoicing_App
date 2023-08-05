@@ -37,6 +37,7 @@ export const InvoiceForm = ({
   totalVatSum,
   totalGrossValue,
   loading,
+  btnName,
 }) => {
   return (
     <Box
@@ -100,8 +101,8 @@ export const InvoiceForm = ({
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  value={seller.companyName}
-                  onChange={(e) => handleChangesSeller(e, "companyName")}
+                  value={seller.compnayName}
+                  onChange={(e) => handleChangesSeller(e, "compnayName")}
                   name="companyName"
                   fullWidth
                   id="companyName"
@@ -439,7 +440,7 @@ export const InvoiceForm = ({
           variant="contained"
           sx={{ mt: 3 }}
         >
-          <span>Create Invoice</span>
+          <span>{btnName}</span>
         </LoadingButton>
       </Box>
     </Box>

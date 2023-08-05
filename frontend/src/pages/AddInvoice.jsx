@@ -213,6 +213,7 @@ export const AddInvoice = () => {
         totalVatSum={totalVatSum}
         totalGrossValue={totalGrossValue}
         loading={loading}
+        btnName="Create Invoice"
       />
     </Card>
   );

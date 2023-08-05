@@ -2,15 +2,16 @@ import { useParams } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import { InvoiceForm } from "../components/invoiceForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "../context/toastContext";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 
 export const EditInvoice = () => {
-  const { id } = useParams;
+  const { id } = useParams();
   const { setOpen, setMessage } = useToast();
   const navigate = useNavigate();
+
   const [basicInfo, setBasicInfo] = useState({
     invoiceNr: "",
     placeOfIssue: "",
@@ -46,6 +47,53 @@ export const EditInvoice = () => {
     },
   ]);
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchSingleInvoice = async () => {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: "GET",
+        redirect: "follow",
+      });
+      const data = await res.json();
+      const itemsExtended = data.items.map((item) => {
+        return {
+          itemName: item.itemName,
+          quantity: item.quantity,
+          netPrice: item.price,
+          netValue: item.quantity * item.price,
+          vat: item.vat,
+          vatSum: (item.vat / 100) * item.quantity * item.price,
+          grossValue:
+            (item.vat / 100) * item.quantity * item.price +
+            item.quantity * item.price,
+        };
+      });
+      setBasicInfo({
+        invoiceNr: data.invoiceNr,
+        placeOfIssue: data.placeOfIssue,
+        dateOfIssue: dayjs(data.dateOfIssue),
+        deadlinePayments: dayjs(data.deadlinePayments),
+        paymentMethod: data.paymentMethod,
+        saleDate: dayjs(data.saleDate),
+        accountNumber: data.accountNumber,
+      });
+      setSeller({
+        compnayName: data.seller.compnayName,
+        nip: data.seller.nip,
+        street: data.seller.street,
+        city: data.seller.city,
+        code: data.seller.code,
+      });
+      setBuyer({
+        compnayName: data.buyer.compnayName,
+        nip: data.buyer.nip,
+        street: data.buyer.street,
+        city: data.buyer.city,
+        code: data.buyer.code,
+      });
+      setItems(itemsExtended);
+    };
+    fetchSingleInvoice();
+  }, []);
   const handleChangesBasicInfo = (e, name) => {
     const value = e.target.value;
     setBasicInfo((prev) => ({ ...prev, [name]: value }));
@@ -150,6 +198,7 @@ export const EditInvoice = () => {
         totalVatSum={totalVatSum}
         totalGrossValue={totalGrossValue}
         loading={loading}
+        btnName="Save Changes"
       />
     </Card>
   );

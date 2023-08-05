@@ -146,7 +146,11 @@ export const SingleInvoice = () => {
             >
               Delete
             </Button>
-            <Button variant="contained" startIcon={<EditNoteOutlinedIcon />}>
+            <Button
+              onClick={() => navigate(`/edit-invoice/${invoice._id}`)}
+              variant="contained"
+              startIcon={<EditNoteOutlinedIcon />}
+            >
               Edit
             </Button>
             <Button

@@ -25,6 +25,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { useToast } from "../context/toastContext.js";
+import { Typography } from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -92,7 +93,11 @@ export const MainLayout = (props) => {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar>
+        <Typography variant="h1" sx={{ fontSize: 24, fontWeight: "400" }}>
+          Invoice <span style={{ color: "rgb(25, 118, 210)" }}>App</span>
+        </Typography>
+      </Toolbar>
       <Divider />
       <List>
         {[

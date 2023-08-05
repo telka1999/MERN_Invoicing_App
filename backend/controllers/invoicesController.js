@@ -32,10 +32,21 @@ const addInvoice = async (req, res) => {
   res.status(200).json(invoice);
 };
 
-// Get Invoice | GET | Private
+// Get Invoices | GET | Private
 
 const getInvoice = async (req, res) => {
   const invoice = await Invoice.find({ userId: req.user._id });
+
+  res.status(200).json(invoice);
+};
+
+// Get Single Invoice | GET | Privite
+
+const getSingleInvoice = async (req, res) => {
+  const invoice = await Invoice.findOne({
+    _id: req.params.id,
+    userId: req.user._id,
+  });
 
   res.status(200).json(invoice);
 };
@@ -95,4 +106,10 @@ const deleteInvoice = async (req, res) => {
   }
 };
 
-export { addInvoice, getInvoice, updateInvoice, deleteInvoice };
+export {
+  addInvoice,
+  getInvoice,
+  updateInvoice,
+  deleteInvoice,
+  getSingleInvoice,
+};

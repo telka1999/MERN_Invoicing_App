@@ -18,6 +18,7 @@ function useProvideAuth() {
 
   useEffect(() => {
     const fetchUser = async () => {
+      console.log(process.env.REACT_APP_URL);
       try {
         const res = await fetch(
           `${process.env.REACT_APP_URL}/api/users/profile`,
@@ -26,6 +27,7 @@ function useProvideAuth() {
             redirect: "follow",
           }
         );
+        console.log(res);
         const data = await res.json();
         console.log(data);
         if (data?.message) {

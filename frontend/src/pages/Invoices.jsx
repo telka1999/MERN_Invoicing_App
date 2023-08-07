@@ -50,14 +50,15 @@ export const Invoices = () => {
     setLoading(false);
   };
 
-  const handleChangeRowsPerPage = (event) => {
+  const handleChangeRowsPerPage = async (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
 
   useEffect(() => {
     const fetchInvoices = async () => {
-      const res = await fetch(`/api/invoices?page=${1}&limit=${10}`, {
+      setLoading(true);
+      const res = await fetch(`/api/invoices?page=${1}&limit=${rowsPerPage}`, {
         method: "GET",
         redirect: "follow",
       });
@@ -69,7 +70,7 @@ export const Invoices = () => {
       setLoading(false);
     };
     fetchInvoices();
-  }, []);
+  }, [rowsPerPage]);
 
   return loading ? (
     <Box

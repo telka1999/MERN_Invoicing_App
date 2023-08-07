@@ -29,7 +29,7 @@ export const SignIn = () => {
         urlencoded.append("email", email);
         urlencoded.append("password", password);
 
-        const res = await fetch("/api/users/auth", {
+        const res = await fetch("https://mern-invoicing-app.vercel.app/api/users/auth", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

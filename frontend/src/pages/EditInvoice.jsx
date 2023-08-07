@@ -51,7 +51,7 @@ export const EditInvoice = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchSingleInvoice = async () => {
-      const res = await fetch(`/api/invoices/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_URL}/api/invoices/${id}`, {
         method: "GET",
         redirect: "follow",
       });
@@ -213,7 +213,7 @@ export const EditInvoice = () => {
           },
           items: itemsArrForDB,
         });
-        const res = await fetch("/api/invoices", {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/invoices`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

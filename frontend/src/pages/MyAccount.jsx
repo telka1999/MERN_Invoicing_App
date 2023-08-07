@@ -44,7 +44,7 @@ export const MyAccount = () => {
         urlencoded.append("name", proflie.fullName);
         urlencoded.append("email", proflie.email);
         urlencoded.append("password", proflie.password);
-        const res = await fetch("/api/users/profile", {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/users/profile`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -98,7 +98,7 @@ export const MyAccount = () => {
         urlencoded.append("nip", company.nip);
         urlencoded.append("street", company.street);
         urlencoded.append("city", company.city);
-        const res = await fetch("/api/users/profile", {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/users/profile`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

@@ -38,7 +38,7 @@ export const SignUp = () => {
         urlencoded.append("email", email);
         urlencoded.append("password", password);
 
-        const res = await fetch("/api/users", {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/users`, {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

@@ -19,7 +19,7 @@ function useProvideAuth() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("https://mern-invoicing-app.vercel.app/api/users/profile", {
+        const res = await fetch(`${process.env.REACT_APP_URL}/api/users/profile`, {
           method: "GET",
           redirect: "follow",
         });

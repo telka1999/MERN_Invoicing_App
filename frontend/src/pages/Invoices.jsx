@@ -28,7 +28,7 @@ export const Invoices = () => {
     if (e.target.dataset.testid === "KeyboardArrowLeftIcon") {
     }
     const res = await fetch(
-      `/api/invoices?page=${
+      `${process.env.REACT_APP_URL}/api/invoices?page=${
         e.target.dataset.testid === "KeyboardArrowLeftIcon"
           ? prev.page
           : next.page
@@ -58,10 +58,15 @@ export const Invoices = () => {
   useEffect(() => {
     const fetchInvoices = async () => {
       setLoading(true);
-      const res = await fetch(`/api/invoices?page=${1}&limit=${rowsPerPage}`, {
-        method: "GET",
-        redirect: "follow",
-      });
+      const res = await fetch(
+        `${
+          process.env.REACT_APP_URL
+        }/api/invoices?page=${1}&limit=${rowsPerPage}`,
+        {
+          method: "GET",
+          redirect: "follow",
+        }
+      );
       const data = await res.json();
       setPrev(data.previous);
       setNext(data.next);

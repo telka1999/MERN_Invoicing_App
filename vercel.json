@@ -2,10 +2,17 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
   "framework": "create-react-app",
-  "rewrites":[
+  "version": 2,
+  "builds": [
     {
-      "source":"/api/(.*)",
-      "destination":"/api/server.js"
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
     }
   ]
 }

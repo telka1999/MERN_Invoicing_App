@@ -1,5 +1,5 @@
 import { PageHeader } from "../components/pageHeader";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -93,69 +93,95 @@ export const Invoices = () => {
           borderRadius: "4px",
         }}
       >
-        <TableContainer sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Invoice Nr</TableCell>
-                <TableCell>Company</TableCell>
-                <TableCell>Date Of Issue</TableCell>
-                <TableCell>Deadline Payments</TableCell>
-                <TableCell>Payment Method</TableCell>
-                <TableCell>Sale Date</TableCell>
-                <TableCell>Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {invoices.map((invoice) => {
-                const totalGrossValue = invoice.items.reduce((total, curr) => {
-                  const vatSum = (curr.vat / 100) * curr.price;
-                  const grossValue = curr.price + vatSum;
-                  return total + grossValue;
-                }, 0);
-                return (
-                  <TableRow
-                    hover
-                    key={invoice._id}
-                    sx={{
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      <Link
-                        to={`invoice/${invoice._id}`}
-                        style={{
-                          cursor: "pointer",
-                          textDecorationLine: "underline",
-                          color: "#1976d2",
+        {invoices.length ? (
+          <>
+            <TableContainer
+              sx={{ borderBottom: "1px solid rgba(0, 0, 0, 0.12)" }}
+            >
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Invoice Nr</TableCell>
+                    <TableCell>Company</TableCell>
+                    <TableCell>Date Of Issue</TableCell>
+                    <TableCell>Deadline Payments</TableCell>
+                    <TableCell>Payment Method</TableCell>
+                    <TableCell>Sale Date</TableCell>
+                    <TableCell>Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {invoices.map((invoice) => {
+                    const totalGrossValue = invoice.items.reduce(
+                      (total, curr) => {
+                        const vatSum = (curr.vat / 100) * curr.price;
+                        const grossValue = curr.price + vatSum;
+                        return total + grossValue;
+                      },
+                      0
+                    );
+                    return (
+                      <TableRow
+                        hover
+                        key={invoice._id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
-                        {invoice.invoiceNr}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{invoice.buyer.compnayName}</TableCell>
-                    <TableCell>{dateReadable(invoice.dateOfIssue)}</TableCell>
-                    <TableCell>
-                      {dateReadable(invoice.deadlinePayments)}
-                    </TableCell>
-                    <TableCell>{invoice.paymentMethod}</TableCell>
-                    <TableCell>{dateReadable(invoice.saleDate)}</TableCell>
-                    <TableCell>{totalGrossValue.toFixed(2)}</TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={count}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+                        <TableCell component="th" scope="row">
+                          <Link
+                            to={`invoice/${invoice._id}`}
+                            style={{
+                              cursor: "pointer",
+                              textDecorationLine: "underline",
+                              color: "#1976d2",
+                            }}
+                          >
+                            {invoice.invoiceNr}
+                          </Link>
+                        </TableCell>
+                        <TableCell>{invoice.buyer.compnayName}</TableCell>
+                        <TableCell>
+                          {dateReadable(invoice.dateOfIssue)}
+                        </TableCell>
+                        <TableCell>
+                          {dateReadable(invoice.deadlinePayments)}
+                        </TableCell>
+                        <TableCell>{invoice.paymentMethod}</TableCell>
+                        <TableCell>{dateReadable(invoice.saleDate)}</TableCell>
+                        <TableCell>{totalGrossValue.toFixed(2)}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 50]}
+              component="div"
+              count={count}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </>
+        ) : (
+          <Box
+            sx={{
+              height: "200px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "gray",
+            }}
+          >
+            <Typography>
+              No invoices found, click the add button to create your first
+              invoice.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </div>
   );

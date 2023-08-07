@@ -43,7 +43,7 @@ const getInvoice = async (req, res) => {
 
   let next = {};
   let previous = {};
-  const count = await Invoice.countDocuments().exec();
+  const count = await Invoice.find({ userId: req.user._id }).countDocuments().exec();
 
   if (endIndex < count) {
     next = {

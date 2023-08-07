@@ -16,11 +16,38 @@ import CircularProgress from "@mui/material/CircularProgress";
 export const Invoices = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [next, setNext] = useState(null);
+  const [prev, setPrev] = useState(null);
+  const [count, setCount] = useState(null);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = async (e, newPage) => {
+    setLoading(true);
     setPage(newPage);
+    if (e.target.dataset.testid === "KeyboardArrowLeftIcon") {
+    }
+    const res = await fetch(
+      `/api/invoices?page=${
+        e.target.dataset.testid === "KeyboardArrowLeftIcon"
+          ? prev.page
+          : next.page
+      }&limit=${
+        e.target.dataset.testid === "KeyboardArrowLeftIcon"
+          ? prev.limit
+          : next.limit
+      }`,
+      {
+        method: "GET",
+        redirect: "follow",
+      }
+    );
+    const data = await res.json();
+    setPrev(data.previous);
+    setNext(data.next);
+    setCount(data.count);
+    setInvoices(data.invoices);
+    setLoading(false);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -30,12 +57,15 @@ export const Invoices = () => {
 
   useEffect(() => {
     const fetchInvoices = async () => {
-      const res = await fetch("/api/invoices", {
+      const res = await fetch(`/api/invoices?page=${1}&limit=${10}`, {
         method: "GET",
         redirect: "follow",
       });
       const data = await res.json();
-      setInvoices(data);
+      setPrev(data.previous);
+      setNext(data.next);
+      setCount(data.count);
+      setInvoices(data.invoices);
       setLoading(false);
     };
     fetchInvoices();
@@ -117,9 +147,9 @@ export const Invoices = () => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
+          rowsPerPageOptions={[10, 25, 50]}
           component="div"
-          count={invoices.length}
+          count={count}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

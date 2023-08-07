@@ -35,9 +35,38 @@ const addInvoice = async (req, res) => {
 // Get Invoices | GET | Private
 
 const getInvoice = async (req, res) => {
-  const invoice = await Invoice.find({ userId: req.user._id });
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
 
-  res.status(200).json(invoice);
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  let next = {};
+  let previous = {};
+  const count = await Invoice.countDocuments().exec();
+
+  if (endIndex < count) {
+    next = {
+      page: page + 1,
+      limit: limit,
+    };
+  }
+
+  if (startIndex > 0) {
+    previous = {
+      page: page - 1,
+      limit: limit,
+    };
+  }
+  try {
+    const invoices = await Invoice.find({ userId: req.user._id })
+      .limit(limit)
+      .skip(startIndex)
+      .exec();
+    res.status(200).json({ invoices, count, next, previous });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
 };
 
 // Get Single Invoice | GET | Privite

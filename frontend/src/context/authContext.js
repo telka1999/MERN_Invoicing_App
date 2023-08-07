@@ -24,6 +24,7 @@ function useProvideAuth() {
           {
             method: "GET",
             redirect: "follow",
+            credentials: "include",
           }
         );
         const data = await res.json();

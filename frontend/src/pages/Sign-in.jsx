@@ -117,7 +117,7 @@ export const SignIn = () => {
           </LoadingButton>
           <Grid container>
             <Grid item>
-              <Link href="/sign-up" variant="body2">
+              <Link variant="body2">
                 <LinkRouter style={{ color: "#1976d2" }} to="/sign-up">
                   Don't have an account? Sign Up
                 </LinkRouter>

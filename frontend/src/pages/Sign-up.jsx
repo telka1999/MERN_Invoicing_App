@@ -158,7 +158,7 @@ export const SignUp = () => {
           </LoadingButton>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/sign-in" variant="body2">
+              <Link variant="body2">
                 <LinkRouter style={{color:"#1976d2"}} to="/sign-in">
                   Already have an account? Sign in
                 </LinkRouter>

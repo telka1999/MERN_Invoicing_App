@@ -117,11 +117,16 @@ export const SignIn = () => {
           </LoadingButton>
           <Grid container>
             <Grid item>
-              <Link variant="body2">
-                <LinkRouter style={{ color: "#1976d2" }} to="/sign-up">
-                  Don't have an account? Sign Up
-                </LinkRouter>
-              </Link>
+              <LinkRouter
+                style={{
+                  color: "#1976d2",
+                  textDecorationLine: "underline",
+                  fontSize: "14px",
+                }}
+                to="/sign-up"
+              >
+                Don't have an account? Sign Up
+              </LinkRouter>
             </Grid>
           </Grid>
         </Box>

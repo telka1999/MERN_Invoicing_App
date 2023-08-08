@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/invoices", invoicesRouters);
 
-app.get("/", (req, res) => res.send("Server is runing"));
+app.get("/", (req, res) => res.redirect(301,"https://mern-invoicing-app.vercel.app/sign-in"));
 
 if (process.env.NODE_ENV === "production") {
   const __dirname = path.resolve();

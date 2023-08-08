@@ -40,16 +40,15 @@ export const MyAccount = () => {
     ) {
       setLoadingProfile(true);
       try {
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("name", proflie.fullName);
-        urlencoded.append("email", proflie.email);
-        urlencoded.append("password", proflie.password);
-        const res = await fetch(`${process.env.REACT_APP_URL}/api/users/profile`, {
+        const raw = JSON.stringify({
+          name: proflie.fullName,
+          email: proflie.email,
+          password: proflie.password,
+        });
+        const res = await fetch("/api/users/profile", {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: urlencoded,
+          headers: { "Content-Type": "application/json" },
+          body: raw,
           redirect: "follow",
         });
         const data = await res.json();
@@ -92,18 +91,17 @@ export const MyAccount = () => {
         company.city !== user.company.city)
     ) {
       try {
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("compnayName", company.compnayName);
-        urlencoded.append("code", company.code);
-        urlencoded.append("nip", company.nip);
-        urlencoded.append("street", company.street);
-        urlencoded.append("city", company.city);
-        const res = await fetch(`${process.env.REACT_APP_URL}/api/users/profile`, {
+        const raw = JSON.stringify({
+          compnayName: company.compnayName,
+          code: company.code,
+          nip: company.nip,
+          street: company.street,
+          city: company.city,
+        });
+        const res = await fetch("/api/users/profile", {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: urlencoded,
+          headers: { "Content-Type": "application/json" },
+          body: raw,
           redirect: "follow",
         });
         const data = await res.json();

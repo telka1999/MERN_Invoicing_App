@@ -12,6 +12,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { useAuth } from "../context/authContext";
 import { useToast } from "../context/toastContext";
 import { useState } from "react";
+import { Link as LinkRouter } from "react-router-dom";
 
 export const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -33,17 +34,16 @@ export const SignUp = () => {
     ) {
       setLoading(true);
       try {
-        let urlencoded = new URLSearchParams();
-        urlencoded.append("name", `${firstName} ${lastName}`);
-        urlencoded.append("email", email);
-        urlencoded.append("password", password);
+        const raw = JSON.stringify({
+          name: `${firstName} ${lastName}`,
+          email: email,
+          password: password,
+        });
 
-        const res = await fetch(`${process.env.REACT_APP_URL}/api/users`, {
+        const res = await fetch("/api/users", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: urlencoded,
+          headers: { "Content-Type": "application/json" },
+          body: raw,
           redirect: "follow",
         });
         const data = await res.json();
@@ -159,7 +159,9 @@ export const SignUp = () => {
           <Grid container justifyContent="flex-end">
             <Grid item>
               <Link href="/sign-in" variant="body2">
-                Already have an account? Sign in
+                <LinkRouter style={{color:"#1976d2"}} to="/sign-in">
+                  Already have an account? Sign in
+                </LinkRouter>
               </Link>
             </Grid>
           </Grid>

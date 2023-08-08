@@ -78,7 +78,7 @@ export const MainLayout = (props) => {
 
   const logoutUser = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_URL}/api/users/logout`, {
+      const res = await fetch("/api/users/logout", {
         method: "POST",
         redirect: "follow",
       });

@@ -8,51 +8,62 @@ import { EditInvoice } from "./pages/EditInvoice";
 import { MyAccount } from "./pages/MyAccount";
 import { MainLayout } from "./layout/main";
 import { useAuth } from "./context/authContext";
+import { Box } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function App() {
   const { user, loading } = useAuth();
-  return (
-    !loading && (
-      <MainLayout
-        user={user}
-        pages={
-          <Routes>
-            <Route
-              path="/"
-              element={user ? <Invoices /> : <Navigate to="/sign-in" />}
-            />{" "}
-            <Route
-              path="/invoice/:id"
-              element={user ? <SingleInvoice /> : <Navigate to="/sign-in" />}
-            />
-            <Route
-              path="/add-invoice"
-              element={user ? <AddInvoice /> : <Navigate to="/sign-in" />}
-            />
-            <Route
-              path="/edit-invoice/:id"
-              element={user ? <EditInvoice /> : <Navigate to="/sign-in" />}
-            />
-            <Route
-              path="/my-account"
-              element={user ? <MyAccount /> : <Navigate to="/sign-in" />}
-            />
-            <Route
-              path="/sign-up"
-              element={user ? <Navigate to="/" /> : <SignUp />}
-            />
-            <Route
-              path="/sign-in"
-              element={user ? <Navigate to="/" /> : <SignIn />}
-            />
-            <Route
-              path="*"
-              element={user ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
-            />
-          </Routes>
-        }
-      />
-    )
+  return !loading ? (
+    <MainLayout
+      user={user}
+      pages={
+        <Routes>
+          <Route
+            path="/"
+            element={user ? <Invoices /> : <Navigate to="/sign-in" />}
+          />{" "}
+          <Route
+            path="/invoice/:id"
+            element={user ? <SingleInvoice /> : <Navigate to="/sign-in" />}
+          />
+          <Route
+            path="/add-invoice"
+            element={user ? <AddInvoice /> : <Navigate to="/sign-in" />}
+          />
+          <Route
+            path="/edit-invoice/:id"
+            element={user ? <EditInvoice /> : <Navigate to="/sign-in" />}
+          />
+          <Route
+            path="/my-account"
+            element={user ? <MyAccount /> : <Navigate to="/sign-in" />}
+          />
+          <Route
+            path="/sign-up"
+            element={user ? <Navigate to="/" /> : <SignUp />}
+          />
+          <Route
+            path="/sign-in"
+            element={user ? <Navigate to="/" /> : <SignIn />}
+          />
+          <Route
+            path="*"
+            element={user ? <Navigate to="/" /> : <Navigate to="/sign-in" />}
+          />
+        </Routes>
+      }
+    />
+  ) : (
+    <Box
+      sx={{
+        display: "flex",
+        height: "calc(100vh - 112px)",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <CircularProgress color="primary" />
+    </Box>
   );
 }
 

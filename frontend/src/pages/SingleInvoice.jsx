@@ -76,11 +76,11 @@ export const SingleInvoice = () => {
   }, []);
   const deletInvoice = async () => {
     try {
-      var raw = JSON.stringify({
+      const raw = JSON.stringify({
         invoiceId: invoice._id,
       });
 
-      const res = await fetch(`${process.env.REACT_APP_URL}/api/invoices`, {
+      const res = await fetch("/api/invoices", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: raw,

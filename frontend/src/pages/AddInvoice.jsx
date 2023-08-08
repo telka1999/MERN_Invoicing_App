@@ -161,7 +161,7 @@ export const AddInvoice = () => {
           },
           items: itemsArrForDB,
         });
-        const res = await fetch(`${process.env.REACT_APP_URL}/api/invoices`, {
+        const res = await fetch("/api/invoices", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

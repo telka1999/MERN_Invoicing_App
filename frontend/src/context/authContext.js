@@ -19,13 +19,10 @@ function useProvideAuth() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch(
-          `${process.env.REACT_APP_URL}/api/users/profile`,
-          {
-            method: "GET",
-            redirect: "follow",
-          }
-        );
+        const res = await fetch("/api/users/profile", {
+          method: "GET",
+          redirect: "follow",
+        });
         const data = await res.json();
         if (data?.message) {
           setUser(null);

@@ -45,10 +45,13 @@ export const SingleInvoice = () => {
   };
   useEffect(() => {
     const fetchSingleInvoice = async () => {
-      const res = await fetch(`${process.env.REACT_APP_URL}/api/invoices/${id}`, {
-        method: "GET",
-        redirect: "follow",
-      });
+      const res = await fetch(
+        `/api/invoices/${id}`,
+        {
+          method: "GET",
+          redirect: "follow",
+        }
+      );
       const data = await res.json();
       const totalNetValue = data.items.reduce((total, curr) => {
         const netValue = curr.quantity * curr.price;
